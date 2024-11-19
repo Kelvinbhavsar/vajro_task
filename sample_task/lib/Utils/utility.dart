@@ -1,11 +1,25 @@
 import 'dart:io';
 
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
-Future<XFile?> pickImage({required ImageSource source}) async {
+enum PasswordError {
+  upperCase('Must contain at least one uppercase'),
+  lowerCase('Must contain at least one lowercase'),
+  digit('Must contain at least one digit'),
+  eigthCharacter('Must be at least 8 characters in length'),
+  specialCharacter('Contain at least one special character: !@#\\\$&*~');
+
+  final String message;
+
+  const PasswordError(this.message);
+}
+
+Future<XFile?> pickImage(ImageSource gallery, BuildContext context,
+    {required ImageSource source}) async {
   // Request appropriate permission based on source
   Permission permission;
   if (source == ImageSource.camera) {
@@ -19,7 +33,6 @@ Future<XFile?> pickImage({required ImageSource source}) async {
   var status = await permission.status;
   print(status);
   if (status.isDenied) {
-    print('yes denied');
     await openAppSettings();
     if (await permission.request().isGranted) {
       // Permission granted, proceed to pick image

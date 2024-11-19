@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'dart:io' show Platform; // Add this import
+import 'package:flutter/material.dart'; // Add this import
 import 'package:webview_flutter/webview_flutter.dart'; // Add dependency for webview_flutter
 
 class WebViewScreen extends StatefulWidget {
@@ -38,17 +37,17 @@ class _WebViewScreenState extends State<WebViewScreen> {
               onPageStarted: (String url) {},
               onPageFinished: (String url) {
                 // Show a snackbar message when page loading is finished
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Page loaded successfully')),
-                );
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //   // const SnackBar(content: Text('Page loaded successfully')),
+                // );
               },
               onHttpError: (HttpResponseError error) {
                 // Show a snackbar message for HTTP errors
-                _showErrorSnackBar("HTTP Error: ${error.response.toString()}");
+                // _showErrorSnackBar("HTTP Error: ${error.response.toString()}");
               },
               onWebResourceError: (WebResourceError error) {
                 // Show a snackbar message for web resource errors
-                _showErrorSnackBar("Web Resource Error: ${error.description}");
+                // _showErrorSnackBar("Web Resource Error: ${error.description}");
               },
             ),
           )
@@ -57,7 +56,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
         <html>
           <head><meta name="viewport" content="width=device-width, initial-scale=0.7"></head>
           <body style='"margin: 0; padding: 0;'>
-            $htmlContent
+            ${widget.htmlString}
           </body>
         </html>
       """)

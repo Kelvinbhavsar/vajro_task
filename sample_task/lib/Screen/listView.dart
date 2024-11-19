@@ -1,9 +1,12 @@
 import 'package:Vajro/Bloc/apiEvents.dart';
 import 'package:Vajro/Bloc/apiState.dart';
 import 'package:Vajro/Model/apiResp.dart';
+import 'package:Vajro/Screen/login.dart';
 import 'package:Vajro/Screen/webView.dart';
+import 'package:Vajro/Utils/colorUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../Bloc/api_Bloc.dart'; // Import your ApiBloc
@@ -34,7 +37,29 @@ class _ListingPageState extends State<ListingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Listing Page'),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              localStorage.setItem('isLoggedIn', "false");
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyHomePage()),
+                  (route) => false);
+            },
+            child: const Text(
+              'Sign Out',
+              style: TextStyle(color: ColorUtils.primaryTitleTextColor),
+            ),
+          ),
+          SizedBox(
+            width: 16,
+          )
+        ],
+        title: const Text(
+          'Listing Page',
+          style: TextStyle(color: ColorUtils.primaryTitleTextColor),
+        ),
+        backgroundColor: ColorUtils.primaryColor,
       ),
       body: BlocBuilder<ApiBloc, ApiState>(
         builder: (context, state) {
@@ -44,6 +69,7 @@ class _ListingPageState extends State<ListingPage> {
             return SmartRefresher(
                 enablePullDown: true,
                 enablePullUp: true,
+                primary: true,
                 header: const WaterDropHeader(),
                 footer: const ClassicFooter(),
                 controller: _refreshController,
@@ -104,6 +130,21 @@ class ItemCell extends StatelessWidget {
                   width: deviceWidth,
                   height: imageHeight,
                   fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return SizedBox(
+                      width: deviceWidth,
+                      height: imageHeight,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
+                        ),
+                      ),
+                    );
+                  },
                   errorBuilder: (context, error, stackTrace) => Image.asset(
                     'assets/images/default_img.jpg', // Placeholder
                     width: deviceWidth,
@@ -122,12 +163,21 @@ class ItemCell extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
+                        color: ColorUtils.primaryTextColor,
                       ),
                     ),
                     const SizedBox(height: 8.0),
-                    Text(item.author),
+                    Text(
+                      item.author,
+                      style:
+                          const TextStyle(color: ColorUtils.secondaryTextColor),
+                    ),
                     const SizedBox(height: 8.0),
-                    Text(item.createdAt), // Use summaryHtml for description
+                    Text(
+                      item.createdAt,
+                      style:
+                          const TextStyle(color: ColorUtils.secondaryTextColor),
+                    ), // Use summaryHtml for description
                   ],
                 ),
               ),
