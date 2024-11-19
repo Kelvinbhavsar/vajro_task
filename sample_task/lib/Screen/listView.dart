@@ -34,7 +34,7 @@ class _ListingPageState extends State<ListingPage> {
     context
         .read<ApiBloc>()
         .add(FetchData(page: _currentPage, pageSize: _pageSize));
-    _loadData();
+    _loadData(isRefresh: true);
   }
 
   void _loadData({bool isRefresh = false}) {
@@ -55,7 +55,7 @@ class _ListingPageState extends State<ListingPage> {
 
   void _onRefresh() async {
     _loadData(isRefresh: true);
-    _refreshController.refreshCompleted();
+    _refreshController.refreshCompleted(resetFooterState: true);
   }
 
   void _onLoading() async {

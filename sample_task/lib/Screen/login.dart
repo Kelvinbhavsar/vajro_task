@@ -45,6 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   GlobalKey key = GlobalKey();
+  bool obscureText = true;
   @override
   Widget build(BuildContext context) {
     // _image =
@@ -112,36 +113,64 @@ class _MyHomePageState extends State<MyHomePage> {
                 const SizedBox(
                   height: 50,
                 ),
-                CustomTextField(
-                  label: 'Email',
-                  controller: _emailController,
-                  validator: (value) {
-                    // Basic validation
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter an email';
-                    }
-                    return null;
-                  },
-                ),
-                CustomTextField(
-                  label: 'Password',
-                  controller: _passwordController,
-                  obscureText: true,
-                  validator: (password) {
-                    if (password != null) {
-                      // Get all errors
-                      final validators = passwordValidator(password);
+                Form(
+                    child: Column(children: [
+                  TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    controller: _emailController,
+                    decoration: const InputDecoration(
+                        labelText: 'Email', hintText: 'Enter your email'),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      // Basic validation
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter an email';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: _passwordController,
+                    keyboardType: TextInputType.visiblePassword,
+                    obscureText: obscureText,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      hintText: 'Enter your password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          // Based on passwordVisible state choose the icon
+                          obscureText == true
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.grey,
+                        ),
+                        onPressed: () {
+                          // Update the state i.e. toogle the state of passwordVisible variable
+                          setState(() {
+                            obscureText = !obscureText;
+                          });
+                        },
+                      ),
+                    ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (password) {
+                      if (password != null) {
+                        // Get all errors
+                        final validators = passwordValidator(password);
 
-                      // Returns null if password is valid
-                      if (validators.isEmpty) return null;
+                        // Returns null if password is valid
+                        if (validators.isEmpty) return null;
 
-                      // Join all errors that start with "-"
-                      return validators.map((e) => '- ${e.message}').join('\n');
-                    }
+                        // Join all errors that start with "-"
+                        return validators
+                            .map((e) => '- ${e.message}')
+                            .join('\n');
+                      }
 
-                    return null;
-                  },
-                ),
+                      return null;
+                    },
+                  ),
+                ])),
                 const SizedBox(
                   height: 50,
                 ),
@@ -162,7 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             MaterialPageRoute(
                               builder: (context) => BlocProvider<ApiBloc>(
                                 create: (context) => ApiBloc()
-                                  ..add(FetchData(page: 1, pageSize: 10)),
+                                  ..add(const FetchData(page: 1, pageSize: 10)),
                                 child: const ListingPage(),
                               ),
                             ),
@@ -236,31 +265,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         );
       },
-    );
-  }
-}
-
-class CustomTextField extends StatelessWidget {
-  final String label;
-  final TextEditingController controller;
-  final String? Function(String?)? validator;
-  final bool obscureText; // For password fields
-
-  const CustomTextField({
-    super.key,
-    required this.label,
-    required this.controller,
-    this.validator,
-    this.obscureText = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      obscureText: obscureText,
-      decoration: InputDecoration(labelText: label),
-      validator: validator,
     );
   }
 }
