@@ -46,14 +46,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   GlobalKey key = GlobalKey();
   bool obscureText = true;
+  FocusNode focusNodeEmail = FocusNode();
+  FocusNode focusNodePassword = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     // _image =
 
     var imgPath = localStorage.getItem('imagePath');
 
-    return Material(
-      child: Container(
+    return Scaffold(
+      backgroundColor: ColorUtils.backgroundColor,
+      body: Container(
         padding: const EdgeInsets.all(16.0),
         color: ColorUtils.backgroundColor,
         child: Center(
@@ -118,6 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   TextFormField(
                     keyboardType: TextInputType.emailAddress,
                     controller: _emailController,
+                    focusNode: focusNodeEmail,
                     decoration: const InputDecoration(
                         labelText: 'Email', hintText: 'Enter your email'),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -131,6 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   TextFormField(
                     controller: _passwordController,
+                    focusNode: focusNodePassword,
                     keyboardType: TextInputType.visiblePassword,
                     obscureText: obscureText,
                     decoration: InputDecoration(
@@ -199,6 +205,14 @@ class _MyHomePageState extends State<MyHomePage> {
                             // MaterialPageRoute(
                             //     builder: (context) => const ListingPage()),
                             );
+                      } else {
+                        focusNodePassword.unfocus();
+                        focusNodeEmail.unfocus();
+                        // Scaffold(body: return ,);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Please enter valid credentials')),
+                        );
                       }
                     }
                   },
