@@ -51,7 +51,7 @@ class _ListingPageState extends State<ListingPage> {
               style: TextStyle(color: ColorUtils.primaryTitleTextColor),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 16,
           )
         ],
@@ -116,8 +116,8 @@ class ItemCell extends StatelessWidget {
           onTap: () {
             // Handle tap, e.g., navigate to details page with bodyHtml
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) =>
-                    WebViewScreen(htmlString: item.bodyHtml)));
+                builder: (context) => WebViewScreen(
+                    htmlString: item.bodyHtml, title: item.title)));
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,16 +161,21 @@ class ItemCell extends StatelessWidget {
                     Text(
                       item.title,
                       style: const TextStyle(
+                        fontFamily: 'Montserrat',
                         fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                         color: ColorUtils.primaryTextColor,
                       ),
                     ),
                     const SizedBox(height: 8.0),
                     Text(
-                      item.author,
-                      style:
-                          const TextStyle(color: ColorUtils.secondaryTextColor),
+                      item.summaryHtml,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          color: ColorUtils.primaryTextColor,
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w400),
                     ),
                     const SizedBox(height: 8.0),
                     Text(

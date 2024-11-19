@@ -3,8 +3,10 @@ import 'package:webview_flutter/webview_flutter.dart'; // Add dependency for web
 
 class WebViewScreen extends StatefulWidget {
   final String htmlString;
+  final String title;
 
-  const WebViewScreen({super.key, required this.htmlString});
+  const WebViewScreen(
+      {super.key, required this.htmlString, required this.title});
 
   @override
   State<WebViewScreen> createState() => _WebViewScreenState();
@@ -37,17 +39,17 @@ class _WebViewScreenState extends State<WebViewScreen> {
               onPageStarted: (String url) {},
               onPageFinished: (String url) {
                 // Show a snackbar message when page loading is finished
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   // const SnackBar(content: Text('Page loaded successfully')),
-                // );
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Page loaded successfully')),
+                );
               },
               onHttpError: (HttpResponseError error) {
                 // Show a snackbar message for HTTP errors
-                // _showErrorSnackBar("HTTP Error: ${error.response.toString()}");
+                _showErrorSnackBar("HTTP Error: ${error.response.toString()}");
               },
               onWebResourceError: (WebResourceError error) {
                 // Show a snackbar message for web resource errors
-                // _showErrorSnackBar("Web Resource Error: ${error.description}");
+                _showErrorSnackBar("Web Resource Error: ${error.description}");
               },
             ),
           )
@@ -77,7 +79,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Web View'),
+        title: Text(widget.title),
       ),
       bottomNavigationBar: LinearProgressIndicator(
         value: progress,

@@ -1,15 +1,15 @@
 import 'dart:io';
 
 import 'package:Vajro/Bloc/apiEvents.dart';
-import 'package:Vajro/Bloc/api_Bloc.dart';
 import 'package:Vajro/Screen/listView.dart';
 import 'package:Vajro/Utils/colorUtils.dart';
 import 'package:Vajro/Utils/utility.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localstorage/localstorage.dart';
+
+import 'package:Vajro/Bloc/api_Bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -22,7 +22,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  XFile? _image;
 
   List<PasswordError> passwordValidator(String password) {
     List<PasswordError> errors = [];
@@ -79,8 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         child: imgPath != null
                             ? Image.file(
-                                File(
-                                    imgPath ?? "assets/images/default_img.jpg"),
+                                File(imgPath),
                                 fit: BoxFit.cover,
                               )
                             : const Icon(Icons.no_photography,
@@ -111,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 50,
                 ),
                 CustomTextField(
@@ -249,12 +247,12 @@ class CustomTextField extends StatelessWidget {
   final bool obscureText; // For password fields
 
   const CustomTextField({
-    Key? key,
+    super.key,
     required this.label,
     required this.controller,
     this.validator,
     this.obscureText = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -53,12 +53,31 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
+  fonts:
+    - family: Montserrat  # Font family name
+      fonts:
+        - asset: assets/fonts/Montserrat-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Montserrat-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Montserrat-SemiBold.ttf
+          weight: 500
+        - asset: assets/fonts/Montserrat-Italic.ttf
+          style: italic
+        - asset: assets/fonts/Montserrat-BoldItalic.ttf
+          style: italic
+          weight: 700
+  
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
   assets:
+    - assets/fonts/Montserrat-Regular.ttf  # Add all your font files
+    - assets/fonts/Montserrat-Bold.ttf
+    - assets/fonts/Montserrat-Italic.ttf
+    - assets/fonts/Montserrat-BoldItalic.ttf
+    - assets/fonts/Montserrat-SemiBold.ttf
     - assets/images/default_img.jpg
 
   # To add assets to your application, add an assets section, like this:
