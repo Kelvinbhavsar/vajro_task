@@ -18,13 +18,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String? isLoggedIn = localStorage.getItem('isLoggedIn') ?? '';
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
-      home: isLoggedIn == "true"
+      home: isLoggedIn != "true"
           ? const MyHomePage()
           : BlocProvider<ApiBloc>(
               create: (context) => ApiBloc()..add(FetchData()),

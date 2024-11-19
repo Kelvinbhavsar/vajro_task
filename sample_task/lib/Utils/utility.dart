@@ -30,11 +30,11 @@ Future<XFile?> pickImage(ImageSource gallery, BuildContext context,
 
   print(permission);
   // Check permission status and request if necessary
-  var status = await permission.status;
+  var status = await permission.request();
   print(status);
   if (status.isDenied) {
     await openAppSettings();
-    if (await permission.request().isGranted) {
+    if (await status.isGranted) {
       // Permission granted, proceed to pick image
     } else {
       // Permission denied, handle accordingly (e.g., show a dialog)

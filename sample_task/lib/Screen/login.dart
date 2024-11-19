@@ -45,11 +45,13 @@ class _MyHomePageState extends State<MyHomePage> {
     return errors;
   }
 
+  GlobalKey key = GlobalKey();
   @override
   Widget build(BuildContext context) {
     // _image =
 
     var imgPath = localStorage.getItem('imagePath');
+
     return Material(
       child: Container(
         padding: const EdgeInsets.all(16.0),
@@ -203,6 +205,7 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          key: key,
           title: const Text('Choose Image Source'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -216,6 +219,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     localStorage.setItem('imagePath', image?.path ?? "");
                   }
                   setState(() {});
+                  Navigator.of(context, rootNavigator: true).pop();
                 },
               ),
               ListTile(
@@ -227,6 +231,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     localStorage.setItem('imagePath', image?.path ?? "");
                   }
                   setState(() {});
+                  Navigator.of(context, rootNavigator: true).pop();
                 },
               ),
             ],
