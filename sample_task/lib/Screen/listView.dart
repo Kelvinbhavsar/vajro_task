@@ -20,6 +20,9 @@ class ListingPage extends StatefulWidget {
 
 class _ListingPageState extends State<ListingPage> {
   final RefreshController _refreshController = RefreshController();
+  final ScrollController _scrollController =
+      ScrollController(keepScrollOffset: true); // Add a scroll controller
+
   List<Article> _cachedArticles = [];
   int _currentPage = 1;
   int _pageSize = 10;
@@ -91,7 +94,12 @@ class _ListingPageState extends State<ListingPage> {
       body: BlocBuilder<ApiBloc, ApiState>(
         builder: (context, state) {
           if (state is ApiLoading) {
-            return const Center(child: CircularProgressIndicator());
+            if (_currentPage == 1) {
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              return ClassicFooter();
+            }
+            // return Container();
           } else if (state is ApiLoaded) {
             if (_currentPage == 1) {
               _cachedArticles = state.articles; //Refresh Case update cache
@@ -107,15 +115,17 @@ class _ListingPageState extends State<ListingPage> {
             return SmartRefresher(
                 enablePullDown: true,
                 enablePullUp: _currentPage > 0 ? true : false,
-                primary: true,
+                primary: false,
                 header: const WaterDropHeader(),
                 footer: const ClassicFooter(),
                 controller: _refreshController,
-                // onRefresh: _onRefresh,
+                onRefresh: _onRefresh,
                 onLoading: _onLoading,
                 child: ListView.builder(
+                    controller: _scrollController,
                     itemCount: _cachedArticles.length,
                     itemBuilder: (context, index) {
+                      print(_cachedArticles.length);
                       return ItemCell(item: _cachedArticles[index]);
                     }));
           } else if (state is ApiError) {
