@@ -7,4 +7,12 @@ abstract class ApiEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class FetchData extends ApiEvent {}
+class FetchData extends ApiEvent {
+  final int page;
+  final int pageSize;
+
+  const FetchData({required this.page, required this.pageSize});
+
+  @override
+  List<Object> get props => [page, pageSize];
+}

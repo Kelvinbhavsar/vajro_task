@@ -10,7 +10,7 @@ class ApiRepository {
   // Cache key
   static const String _articlesCacheKey = 'articles_cache';
 
-  Future<List<Article>> fetchData() async {
+  Future<List<Article>> fetchData(int page, int pageSize) async {
     try {
       final response = await http.get(Uri.parse(_apiUrl));
 
@@ -22,19 +22,26 @@ class ApiRepository {
 
         if (jsonData['status'] == 'success') {
           final List<dynamic> articlesData = jsonData['articles'];
-          return articlesData
+          List<Article> allArticles = articlesData
               .map((articleJson) => Article.fromJson(articleJson))
               .toList();
+
+          int startIndex = (page - 1) * pageSize;
+          int endIndex = startIndex + pageSize;
+          if (endIndex > allArticles.length) {
+            endIndex = allArticles.length;
+          }
+          return allArticles.sublist(startIndex, endIndex);
         } else {
           throw Exception('API returned an unsuccessful status.');
         }
       } else {
         // Try to load from cache if the network request fails
-        return _loadDataFromCache();
+        return _loadDataFromCache(page, pageSize);
       }
     } catch (e) {
       // If both network and cache fail
-      return _loadDataFromCache();
+      return _loadDataFromCache(page, pageSize);
     }
   }
 
@@ -43,7 +50,7 @@ class ApiRepository {
     await prefs.setString(_articlesCacheKey, responseData);
   }
 
-  Future<List<Article>> _loadDataFromCache() async {
+  Future<List<Article>> _loadDataFromCache(int page, int pageSize) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final cachedData = prefs.getString(_articlesCacheKey);
@@ -52,9 +59,15 @@ class ApiRepository {
         final Map<String, dynamic> jsonData = json.decode(cachedData);
         if (jsonData['status'] == 'success') {
           final List<dynamic> articlesData = jsonData['articles'];
-          return articlesData
+          List<Article> allArticles = articlesData
               .map((articleJson) => Article.fromJson(articleJson))
               .toList();
+          int startIndex = (page - 1) * pageSize;
+          int endIndex = startIndex + pageSize;
+          if (endIndex > allArticles.length) {
+            endIndex = allArticles.length;
+          }
+          return allArticles.sublist(startIndex, endIndex);
         } else {
           throw Exception(
               'Cached data has unsuccessful status.'); // or handle differently

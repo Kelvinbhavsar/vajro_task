@@ -20,17 +20,44 @@ class ListingPage extends StatefulWidget {
 
 class _ListingPageState extends State<ListingPage> {
   final RefreshController _refreshController = RefreshController();
+  List<Article> _cachedArticles = [];
+  int _currentPage = 1;
+  int _pageSize = 10;
 
   @override
   void initState() {
     super.initState();
     // Fetch data when the widget initializes
-    context.read<ApiBloc>().add(FetchData());
+    context
+        .read<ApiBloc>()
+        .add(FetchData(page: _currentPage, pageSize: _pageSize));
+    _loadData();
+  }
+
+  void _loadData({bool isRefresh = false}) {
+    if (isRefresh) {
+      _currentPage = 1; // Reset to the first page
+      _cachedArticles = []; // Clear cache
+      context
+          .read<ApiBloc>()
+          .add(FetchData(page: _currentPage, pageSize: _pageSize));
+    } else if (_currentPage > 0) {
+      //Load more
+      _currentPage++;
+      context
+          .read<ApiBloc>()
+          .add(FetchData(page: _currentPage, pageSize: _pageSize));
+    }
   }
 
   void _onRefresh() async {
-    context.read<ApiBloc>().add(FetchData());
+    _loadData(isRefresh: true);
     _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    _loadData();
+    _refreshController.loadComplete();
   }
 
   @override
@@ -66,18 +93,30 @@ class _ListingPageState extends State<ListingPage> {
           if (state is ApiLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is ApiLoaded) {
+            if (_currentPage == 1) {
+              _cachedArticles = state.articles; //Refresh Case update cache
+            } else {
+              _cachedArticles
+                  .addAll(state.articles); //Load More case append data
+              if (state.articles.length < _pageSize) {
+                //No more Data
+                _currentPage = 0; //Stop making further load more calls
+                _refreshController.loadNoData();
+              }
+            }
             return SmartRefresher(
                 enablePullDown: true,
-                enablePullUp: true,
+                enablePullUp: _currentPage > 0 ? true : false,
                 primary: true,
                 header: const WaterDropHeader(),
                 footer: const ClassicFooter(),
                 controller: _refreshController,
-                onRefresh: _onRefresh,
+                // onRefresh: _onRefresh,
+                onLoading: _onLoading,
                 child: ListView.builder(
-                    itemCount: state.articles.length,
+                    itemCount: _cachedArticles.length,
                     itemBuilder: (context, index) {
-                      return ItemCell(item: state.articles[index]);
+                      return ItemCell(item: _cachedArticles[index]);
                     }));
           } else if (state is ApiError) {
             return Center(child: Text(state.message));

@@ -161,8 +161,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => BlocProvider<ApiBloc>(
-                                create: (context) =>
-                                    ApiBloc()..add(FetchData()),
+                                create: (context) => ApiBloc()
+                                  ..add(FetchData(page: 1, pageSize: 10)),
                                 child: const ListingPage(),
                               ),
                             ),

@@ -12,7 +12,7 @@ class ApiBloc extends Bloc<ApiEvent, ApiState> {
   void _onFetchData(FetchData event, Emitter<ApiState> emit) async {
     emit(ApiLoading());
     try {
-      final articles = await ApiRepository().fetchData();
+      final articles = await ApiRepository().fetchData(event.page,event.pageSize);
       emit(ApiLoaded(articles: articles));
     } catch (e) {
       emit(ApiError(message: e.toString()));

@@ -29,7 +29,8 @@ class MyApp extends StatelessWidget {
       home: isLoggedIn != "true"
           ? const MyHomePage()
           : BlocProvider<ApiBloc>(
-              create: (context) => ApiBloc()..add(FetchData()),
+              create: (context) =>
+                  ApiBloc()..add(FetchData(page: 1, pageSize: 10)),
               child: const ListingPage(),
             ),
     );
