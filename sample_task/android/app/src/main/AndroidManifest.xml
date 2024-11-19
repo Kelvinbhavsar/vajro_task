@@ -1,4 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>  <!-- For accessing images/pictures -->
+<!-- You no longer need WRITE_EXTERNAL_STORAGE permission unless targeting older Android versions or have specific requirements to write files anywhere on shared storage -->
+
+
     <application
         android:label="sample_task"
         android:name="${applicationName}"
